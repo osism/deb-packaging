@@ -20,6 +20,7 @@ sudo apt-get install -y \
     iproute2 \
     libcap-ng-dev \
     libdbus-1-dev \
+    libdpdk-dev \
     libnuma-dev \
     libpcap-dev \
     libssl-dev \
@@ -37,7 +38,7 @@ git clone https://github.com/openvswitch/ovs.git
 pushd ovs
 git checkout $VERSION
 ./boot.sh
-./configure
+./configure --with-dpdk=shared
 make debian
 make debian-deb
 popd
