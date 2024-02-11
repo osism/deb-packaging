@@ -1,0 +1,25 @@
+---
+name: Build ovs 3.1
+
+"on":
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-ovs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build ovs package
+        run: ./scripts/build-ovs-3.1.sh
+
+      - name: Upload ovs package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ovs
+          path: "*.deb"
+          retention-days: 5
