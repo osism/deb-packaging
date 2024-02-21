@@ -6,6 +6,9 @@ name: Build ovs 3.2
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/build-ovs-3.2.yml'
+      - 'scripts/build-ovs-3.2.sh'
 
 jobs:
   build-ovs:
