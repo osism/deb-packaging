@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=v3.1.4
+VERSION=v3.1.5
 
 # https://docs.openvswitch.org/en/latest/intro/install/debian/#building-open-vswitch-debian-packages
 
