@@ -39,5 +39,6 @@ git checkout $VERSION
 ./boot.sh
 ./configure
 make debian
+dpkg-checkbuilddeps
 make debian-deb
 popd
