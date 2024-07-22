@@ -9,10 +9,14 @@ name: Build ovs 3.2
     paths:
       - '.github/workflows/build-ovs-3.2.yml'
       - 'scripts/build-ovs-3.2.sh'
+  pull_request:
+    paths:
+      - '.github/workflows/build-ovs-3.2.yml'
+      - 'scripts/build-ovs-3.2.sh'
 
 jobs:
   build-ovs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
