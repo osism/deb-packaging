@@ -1,5 +1,5 @@
 ---
-name: Build ovs 3.3
+name: Build ovs with dpdk 3.3
 
 "on":
   workflow_dispatch:
@@ -7,22 +7,22 @@ name: Build ovs 3.3
     branches:
       - main
     paths:
-      - '.github/workflows/build-ovs-3.3.yml'
-      - 'scripts/build-ovs-3.3.sh'
+      - '.github/workflows/build-ovs-with-dpdk-3.3.yml'
+      - 'scripts/build-ovs-with-dpdk-3.3.sh'
   pull_request:
     paths:
-      - '.github/workflows/build-ovs-3.3.yml'
-      - 'scripts/build-ovs-3.3.sh'
+      - '.github/workflows/build-ovs-with-dpdk-3.3.yml'
+      - 'scripts/build-ovs-with-dpdk-3.3.sh'
 
 jobs:
-  build-ovs-3-3:
+  build-ovs-with-dpdk-3-3:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Build package
-        run: ./scripts/build-ovs-3.3.sh
+        run: ./scripts/build-ovs-with-dpdk-3.3.sh
 
       - name: Upload package
         uses: actions/upload-artifact@v3
