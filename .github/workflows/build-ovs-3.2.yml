@@ -15,16 +15,16 @@ name: Build ovs 3.2
       - 'scripts/build-ovs-3.2.sh'
 
 jobs:
-  build-ovs:
+  build-ovs-3-2:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Build ovs package
+      - name: Build package
         run: ./scripts/build-ovs-3.2.sh
 
-      - name: Upload ovs package
+      - name: Upload package
         uses: actions/upload-artifact@v3
         with:
           name: ovs
