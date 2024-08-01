@@ -1,0 +1,40 @@
+---
+- name: Prepare build of ovs packages
+  hosts: all
+
+  roles:
+    - ensure-docker
+
+  tasks:
+    - name: Install required packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+          - autoconf
+          - automake
+          - build-essential
+          - bzip2
+          - gcc-aarch64-linux-gnu
+          - debhelper-compat
+          - dh-exec
+          - dh-python
+          - dh-sequence-python3
+          - dh-sequence-sphinxdoc
+          - fakeroot
+          - graphviz
+          - iproute2
+          - libcap-ng-dev
+          - libdbus-1-dev
+          - libnuma-dev
+          - libpcap-dev
+          - libssl-dev
+          - libtool
+          - libunbound-dev
+          - openssl
+          - pkg-config
+          - procps
+          - python3-all-dev
+          - python3-setuptools
+          - python3-sortedcontainers
+          - python3-sphinx

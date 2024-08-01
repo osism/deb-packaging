@@ -38,6 +38,10 @@
     max: 1
 
 - semaphore:
+    name: semaphore-deb-packaging-push-ovs-3.5-aarch64
+    max: 1
+
+- semaphore:
     name: semaphore-deb-packaging-push-open-iscsi-bookworm-backports
     max: 1
 
@@ -98,6 +102,17 @@
       ovs_version: "v3.5.2"
 
 - job:
+    name: deb-packaging-build-ovs-3.5-aarch64
+    pre-run: playbooks/pre-ovs-aarch64.yml
+    run: playbooks/build-ovs-aarch64.yml
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+    vars:
+      ovs_version: "v3.5.2"
+
+- job:
     name: deb-packaging-push-ovs-3.3
     parent: deb-packaging-build-ovs-3.3
     semaphores:
@@ -125,7 +140,19 @@
     name: deb-packaging-push-ovs-3.5
     parent: deb-packaging-build-ovs-3.5
     semaphores:
-      - name: semaphore-deb-packaging-push-ovs-3.4
+      - name: semaphore-deb-packaging-push-ovs-3.5
+    vars:
+      ovs_push: true
+    secrets:
+      - name: secret
+        secret: SECRET_DEB_PACKAGING
+        pass-to-parent: true
+
+- job:
+    name: deb-packaging-push-ovs-3.5-aarch64
+    parent: deb-packaging-build-ovs-3.5-aarch64
+    semaphores:
+      - name: semaphore-deb-packaging-push-ovs-3.5-aarch64
     vars:
       ovs_push: true
     secrets:
@@ -139,14 +166,16 @@
     check:
       jobs:
         - ansible-lint
-        - deb-packaging-build-ovs-3.3
-        - deb-packaging-build-ovs-3.4
-        - deb-packaging-build-ovs-3.5
-        - deb-packaging-build-open-iscsi-bookworm-backports
+        # - deb-packaging-build-ovs-3.3
+        # - deb-packaging-build-ovs-3.4
+        # - deb-packaging-build-ovs-3.5
+        - deb-packaging-build-ovs-3.5-aarch64
+        # - deb-packaging-build-open-iscsi-bookworm-backports
         - yamllint
     post:
       jobs:
         - deb-packaging-push-ovs-3.3
         - deb-packaging-push-ovs-3.4
         - deb-packaging-push-ovs-3.5
+        - deb-packaging-push-ovs-3.5-aarch64
         - deb-packaging-push-open-iscsi-bookworm-backports
