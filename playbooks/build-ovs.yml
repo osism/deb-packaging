@@ -1,0 +1,13 @@
+---
+- name: Build ovs packages
+  hosts: all
+
+  tasks:
+    - name: Run build script
+      ansible.builtin.shell: |
+        export VERSION={{ ovs_version }}
+        ./scripts/build-ovs.sh
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+        executable: /bin/bash
+      changed_when: false
