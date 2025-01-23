@@ -1,10 +1,30 @@
 ---
+- job:
+    name: deb-packaging-ovs-3.3
+    pre-run: playbooks/pre-ovs.yml
+    run: playbooks/build-ovs.yml
+    vars:
+      ovs_version: "v3.3.3"
+
+- job:
+    name: deb-packaging-ovs-3.4
+    pre-run: playbooks/pre-ovs.yml
+    run: playbooks/build-ovs.yml
+    vars:
+      ovs_version: "v3.4.1"
+
 - project:
     merge-mode: squash-merge
     default-branch: main
     check:
       jobs:
+        - ansible-lint
+        - deb-packaging-ovs-3.3
+        - deb-packaging-ovs-3.4
         - yamllint
     gate:
       jobs:
+        - ansible-lint
+        - deb-packaging-ovs-3.3
+        - deb-packaging-ovs-3.4
         - yamllint
