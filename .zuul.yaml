@@ -1,17 +1,75 @@
 ---
+- secret:
+    name: SECRET_DEB_PACKAGING
+    data:
+      DOCKER_USERNAME: !encrypted/pkcs1-oaep
+        - SW5k05xJsrlhfaV7cbY29oybsyLIyGV9o1Sg0aXhglk5aYgaP74RV4Pfs8+yZm/Yp3k0u
+          fueSjSnHkIADijBmOr8mxwGXeHLOftP4tp+Y3jrcX3PhgOGBMSh0HIyA+/PIq23Z6GzEA
+          OUDjbPxYA6jaaBaQfZens0dBs96QMMbPxzntIdI1o6a5TgSMQcyG6e1AlE1jqA52YQHD5
+          jXEKX0z6Zk8Sb1Z2sGiT94q3IkF0Na1iKI1V1C6qfR7ACSGURlO4OrLwZa/enDKJjjmz0
+          qV0djwAtLzVOe9dz94vA1vCZxg+b/3v0EvQCY0ywJUXI30EAtCBKySqT1G4MZfIOU8iVi
+          x+P+SvlDuwNklWWa9v/yefkrjB4/qsEdLxI9ro3QW3CP18yMu4JQHE+KVTM9oJYrH/DYb
+          z/TEuV0RQv5yA+N+hXnrgGWsadhkQQ7WwrKX4ej0pe22EEjjQum0l3ttg5x+0czbpV07T
+          5JX8FvQbURD0pHq9lqVveSy5pRd0XvbTUSBG08TfndVxb1oeu7v7o2BKZX/FjdTVukOPV
+          1QkbfcEBk8RE7UkotOwaIT7Iqz1s7laIArwkYeLc5ZzK0dGyeLpAGLM/V3JeHXN0ER53H
+          NBoJJerUM5aIYkGP84Di3MGzHMdbkuOSqA3tUNHNNjpHL+LmXd6QZjxMk5fSLk=
+      DOCKER_PASSWORD: !encrypted/pkcs1-oaep
+        - PO5QXLrrf8wpxicXhsly3JJy8ClW+tt2KAgyitjt7Q96L5tAVe7FCCTqNgAczd1UeqldJ
+          0yNWMEdZEf7xfTTmqopag9AnECKUlkr6ejirT5VvCKrrdjEKEOApDM62/zq6kc4IJj2c8
+          qqbf4a5sP/HJoE15+SrvtsVeOnOOygAebr4dxAO5V6zMlEFsdW6duAo7nwPpug85FMVj7
+          R28mfei5o9w2LpKvbHeJuRgoARw6EylrDtQFMallFGVnKDdciWZ0og6Wf1twd50Wt0jk6
+          XVmKIPkiHT6FddQfZdYNkw49VA2Y26qXZd7s8qe6IGtkKdiyyW/FdqAYEo3phWo0+g1UX
+          eprfp5vEhTr1OGrAtuY/I4mSiACroDvRssf8GHT+0dtizBIXPO24uYcLk/b5ip7q4scCF
+          2QA7GNpb74EGRCI+FPYPQZRCxFqrW1CuW+Kh4uQ5VOV8ew++UPWUuBxQIHDLiyzgadduv
+          3hPMCoWw/yI46shBEGT2w0ep1jLiHXilnT8QpDHwrofcDUCjwR0bnaIGUBg0apriJMpGs
+          C2wpcnx6n4pIiIC4a/wKV9tBawKWr3jAZnEEojSVR7ZKqlq7WwhC+uiFoIqoMo5TsLyvw
+          Q7s1ZhUYTkeiDOf38TppC52gUM0frgUv82S8s2n872sGeK69jHWrCNIhDFaF/s=
+
+- semaphore:
+    name: semaphore-deb-packaging-push-ovs-3.3
+    max: 1
+
+- semaphore:
+    name: semaphore-deb-packaging-push-ovs-3.4
+    max: 1
+
 - job:
-    name: deb-packaging-ovs-3.3
+    name: deb-packaging-build-ovs-3.3
     pre-run: playbooks/pre-ovs.yml
     run: playbooks/build-ovs.yml
     vars:
       ovs_version: "v3.3.3"
 
 - job:
-    name: deb-packaging-ovs-3.4
+    name: deb-packaging-build-ovs-3.4
     pre-run: playbooks/pre-ovs.yml
     run: playbooks/build-ovs.yml
     vars:
       ovs_version: "v3.4.1"
+
+- job:
+    name: deb-packaging-push-ovs-3.3
+    parent: deb-packaging-build-ovs-3.3
+    semaphores:
+      - name: semaphore-deb-packaging-push-ovs-3.3
+    vars:
+      ovs_push: true
+    secrets:
+      - name: secret
+        secret: SECRET_DEB_PACKAGING
+        pass-to-parent: true
+
+- job:
+    name: deb-packaging-push-ovs-3.4
+    parent: deb-packaging-build-ovs-3.4
+    semaphores:
+      - name: semaphore-deb-packaging-push-ovs-3.4
+    vars:
+      ovs_push: true
+    secrets:
+      - name: secret
+        secret: SECRET_DEB_PACKAGING
+        pass-to-parent: true
 
 - project:
     merge-mode: squash-merge
@@ -19,12 +77,12 @@
     check:
       jobs:
         - ansible-lint
-        - deb-packaging-ovs-3.3
-        - deb-packaging-ovs-3.4
+        - deb-packaging-build-ovs-3.3
+        - deb-packaging-build-ovs-3.4
         - yamllint
-    gate:
+    post:
       jobs:
         - ansible-lint
-        - deb-packaging-ovs-3.3
-        - deb-packaging-ovs-3.4
+        - deb-packaging-push-ovs-3.3
+        - deb-packaging-push-ovs-3.4
         - yamllint
