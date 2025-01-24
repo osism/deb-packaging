@@ -41,6 +41,8 @@
       nodes:
         - name: debian-bookworm
           label: debian-bookworm
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
     vars:
       ovs_version: "v3.3.3"
 

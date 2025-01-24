@@ -8,7 +8,7 @@
   tasks:
     - name: Run build script
       ansible.builtin.shell: |
-        export VERSION={{ ovs_version }}
+        export OVS_VERSION={{ ovs_version }}
         ./scripts/build-ovs.sh
       args:
         chdir: "{{ zuul.project.src_dir }}"
@@ -25,7 +25,7 @@
 
     - name: Run push script
       ansible.builtin.shell: |
-        export VERSION={{ ovs_version }}
+        export OVS_VERSION={{ ovs_version }}
         ./scripts/push-ovs.sh
       args:
         chdir: "{{ zuul.project.src_dir }}"
