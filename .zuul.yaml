@@ -37,6 +37,10 @@
     name: deb-packaging-build-ovs-3.3
     pre-run: playbooks/pre-ovs.yml
     run: playbooks/build-ovs.yml
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
     vars:
       ovs_version: "v3.3.3"
 
@@ -44,6 +48,10 @@
     name: deb-packaging-build-ovs-3.4
     pre-run: playbooks/pre-ovs.yml
     run: playbooks/build-ovs.yml
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
     vars:
       ovs_version: "v3.4.1"
 
