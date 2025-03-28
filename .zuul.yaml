@@ -44,7 +44,7 @@
         - name: ubuntu-jammy
           label: ubuntu-jammy
     vars:
-      ovs_version: "v3.3.3"
+      ovs_version: "v3.3.4"
 
 - job:
     name: deb-packaging-build-ovs-3.4
@@ -55,7 +55,7 @@
         - name: debian-bookworm
           label: debian-bookworm
     vars:
-      ovs_version: "v3.4.1"
+      ovs_version: "v3.4.2"
 
 - job:
     name: deb-packaging-push-ovs-3.3
