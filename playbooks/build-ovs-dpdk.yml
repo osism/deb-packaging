@@ -1,0 +1,34 @@
+---
+- name: Build ovs dpdk packages
+  hosts: all
+
+  vars:
+    docker_registry: osism.harbor.regio.digital
+
+  tasks:
+    - name: Run build script
+      ansible.builtin.shell: |
+        export OVS_VERSION={{ ovs_version }}
+        ./scripts/build-ovs-dpdk.sh
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Log into registry
+      community.docker.docker_login:
+        registry_url: "{{ docker_registry }}"
+        username: "{{ secret.DOCKER_USERNAME }}"
+        password: "{{ secret.DOCKER_PASSWORD }}"
+      when: ovs_push | default(false) | bool
+      no_log: true
+
+    - name: Run push script
+      ansible.builtin.shell: |
+        export OVS_VERSION={{ ovs_version }}
+        ./scripts/push-ovs-dpdk.sh
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+        executable: /bin/bash
+      changed_when: false
+      when: ovs_push | default(false) | bool

@@ -33,6 +33,10 @@
     name: semaphore-deb-packaging-push-ovs-3.4
     max: 1
 
+- semaphore:
+    name: semaphore-deb-packaging-push-ovs-dpdk-3.5
+    max: 1
+
 - job:
     name: deb-packaging-build-ovs-3.3
     pre-run: playbooks/pre-ovs.yml
@@ -58,6 +62,17 @@
       ovs_version: "v3.4.3"
 
 - job:
+    name: deb-packaging-build-ovs-dpdk-3.5
+    pre-run: playbooks/pre-ovs-dpdk.yml
+    run: playbooks/build-ovs-dpdk.yml
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+    vars:
+      ovs_version: "v3.5.1"
+
+- job:
     name: deb-packaging-push-ovs-3.3
     parent: deb-packaging-build-ovs-3.3
     semaphores:
@@ -81,6 +96,18 @@
         secret: SECRET_DEB_PACKAGING
         pass-to-parent: true
 
+- job:
+    name: deb-packaging-push-ovs-dpdk-3.5
+    parent: deb-packaging-build-ovs-dpdk-3.5
+    semaphores:
+      - name: semaphore-deb-packaging-push-ovs-dpdk-3.5
+    vars:
+      ovs_push: true
+    secrets:
+      - name: secret
+        secret: SECRET_DEB_PACKAGING
+        pass-to-parent: true
+
 - project:
     merge-mode: squash-merge
     default-branch: main
@@ -89,10 +116,12 @@
         - ansible-lint
         - deb-packaging-build-ovs-3.3
         - deb-packaging-build-ovs-3.4
+        - deb-packaging-build-ovs-dpdk-3.5
         - yamllint
     post:
       jobs:
         - ansible-lint
         - deb-packaging-push-ovs-3.3
         - deb-packaging-push-ovs-3.4
+        - deb-packaging-push-ovs-dpdk-3.5
         - yamllint
