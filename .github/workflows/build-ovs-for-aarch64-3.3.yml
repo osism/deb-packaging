@@ -1,0 +1,32 @@
+---
+name: Build ovs for aarch64 3.3
+
+"on":
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-ovs-for-aarch64-3.3.yml'
+      - 'scripts/build-ovs-for-aarch64-3.3.sh'
+  pull_request:
+    paths:
+      - '.github/workflows/build-ovs-for-aarch64-3.3.yml'
+      - 'scripts/build-ovs-for-aarch64-3.3.sh'
+
+jobs:
+  build-ovs-for-aarch64-3-3:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build ovs package
+        run: ./scripts/build-ovs-for-aarch64-3.3.sh
+
+      - name: Upload ovs package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ovs
+          path: "*.deb"
+          retention-days: 5
