@@ -1,0 +1,28 @@
+FROM debian:bookworm AS builder
+WORKDIR /packages
+ENV EMAIL="info@osism.tech"
+RUN <<EOF
+# https://wiki.debian.org/SimpleBackportCreation
+echo "Types: deb-src
+URIs: http://deb.debian.org/debian/
+Suites: trixie
+Components: main
+" > /etc/apt/sources.list.d/trixie-deb-src.sources
+apt update
+apt -y upgrade
+apt -y install packaging-dev debian-keyring devscripts equivs
+apt source open-iscsi/trixie
+cd open-iscsi-*/
+#######################################################################################
+# Workaround for error:
+# dh_installsystemd: error: Package 'open-iscsi' does not install unit 'iscsid.socket'.
+# This is to be installed in a container without systemd anyway
+sed -i '/^override_dh_installsystemd:$/,/^$/d' debian/rules
+#######################################################################################
+yes | mk-build-deps --install --remove
+dch --bpo
+dpkg-buildpackage --build=binary --unsigned-changes
+EOF
+
+FROM scratch
+COPY --from=builder /packages/*.deb /

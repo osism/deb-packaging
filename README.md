@@ -8,3 +8,4 @@ Currently, the following projects are included. In the future, more
 projects will be added as needed.
 
 * Open vSwitch
+* open-iscsi

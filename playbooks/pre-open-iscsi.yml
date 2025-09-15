@@ -1,0 +1,6 @@
+---
+- name: Prepare build of ovs packages
+  hosts: all
+
+  roles:
+    - ensure-docker
