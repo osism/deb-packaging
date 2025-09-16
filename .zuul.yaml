@@ -42,80 +42,15 @@
     pre-run: playbooks/pre-open-iscsi.yml
     run: playbooks/build-open-iscsi.yml
 
-- job:
-    name: deb-packaging-push-open-iscsi-bookworm-backports
-    parent: deb-packaging-build-open-iscsi-bookworm-backports
-    semaphores:
-      - name: semaphore-deb-packaging-push-open-iscsi-bookworm-backports
-    vars:
-      open_iscsi_push: true
-    secrets:
-      - name: secret
-        secret: SECRET_DEB_PACKAGING
-        pass-to-parent: true
-
-- job:
-    name: deb-packaging-build-ovs-3.3
-    pre-run: playbooks/pre-ovs.yml
-    run: playbooks/build-ovs.yml
-    nodeset:
-      nodes:
-        - name: debian-bookworm
-          label: debian-bookworm
-        - name: ubuntu-jammy
-          label: ubuntu-jammy
-    vars:
-      ovs_version: "v3.3.5"
-
-- job:
-    name: deb-packaging-build-ovs-3.4
-    pre-run: playbooks/pre-ovs.yml
-    run: playbooks/build-ovs.yml
-    nodeset:
-      nodes:
-        - name: debian-bookworm
-          label: debian-bookworm
-    vars:
-      ovs_version: "v3.4.3"
-
-- job:
-    name: deb-packaging-push-ovs-3.3
-    parent: deb-packaging-build-ovs-3.3
-    semaphores:
-      - name: semaphore-deb-packaging-push-ovs-3.3
-    vars:
-      ovs_push: true
-    secrets:
-      - name: secret
-        secret: SECRET_DEB_PACKAGING
-        pass-to-parent: true
-
-- job:
-    name: deb-packaging-push-ovs-3.4
-    parent: deb-packaging-build-ovs-3.4
-    semaphores:
-      - name: semaphore-deb-packaging-push-ovs-3.4
-    vars:
-      ovs_push: true
-    secrets:
-      - name: secret
-        secret: SECRET_DEB_PACKAGING
-        pass-to-parent: true
-
 - project:
     merge-mode: squash-merge
     default-branch: main
     check:
       jobs:
         - ansible-lint
-        - deb-packaging-build-ovs-3.3
-        - deb-packaging-build-ovs-3.4
         - deb-packaging-build-open-iscsi-bookworm-backports
         - yamllint
     post:
       jobs:
         - ansible-lint
-        - deb-packaging-push-ovs-3.3
-        - deb-packaging-push-ovs-3.4
-        - deb-packaging-push-open-iscsi-bookworm-backports
         - yamllint

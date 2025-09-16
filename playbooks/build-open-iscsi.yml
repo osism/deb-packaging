@@ -8,45 +8,10 @@
     default_docker_tag: bookworm-backports
 
   tasks:
-    - name: Run build
-      ansible.builtin.command:
-        argv:
-          - docker
-          - build
-          - --tag
-          - "{{
-                docker_registry | default(default_docker_registry)
-             }}/{{
-                docker_namespace | default(default_docker_namespace)
-             }}/open-iscsi:{{
-               docker_tag | default(default_docker_tag)
-             }}"
-          - --file
-          - Containerfile
-          - .
-        chdir: "{{ zuul.project.src_dir }}/files/open-iscsi"
-      changed_when: false
-
     - name: Log into registry
       community.docker.docker_login:
         registry_url: "{{ docker_registry | default(default_docker_registry) }}"
-        username: "{{ secret.DOCKER_USERNAME }}"
-        password: "{{ secret.DOCKER_PASSWORD }}"
-      when: open_iscsi_push | default(false) | bool
-      no_log: true
-
-    - name: Run push
-      ansible.builtin.command:
-        argv:
-          - docker
-          - push
-          - "{{
-                docker_registry | default(default_docker_registry)
-             }}/{{
-                docker_namespace | default(default_docker_namespace)
-             }}/open-iscsi:{{
-               docker_tag | default(default_docker_tag)
-             }}"
-        chdir: "{{ zuul.project.src_dir }}/files/open-iscsi"
-      changed_when: false
-      when: open_iscsi_push | default(false) | bool
+        username: "foo"
+        password: "bar"
+      when: true
+      no_log: false
