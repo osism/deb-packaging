@@ -1,0 +1,16 @@
+FROM debian:bookworm AS builder
+WORKDIR /packages
+ENV EMAIL="info@osism.tech"
+
+RUN apt-get update
+RUN apt-get -y install packaging-dev debian-keyring devscripts equivs xz-utils
+RUN wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/qemu/1:8.2.2+ds-0ubuntu1.10/qemu_8.2.2+ds-0ubuntu1.10.debian.tar.xz
+RUN tar xf "qemu_8.2.2+ds-0ubuntu1.10.debian.tar.xz"
+RUN ls -la
+RUN cd qemu*/
+RUN yes | mk-build-deps --install --remove
+RUN dch --bpo
+RUN dpkg-buildpackage --build=binary --unsigned-changes
+
+FROM scratch
+COPY --from=builder /packages/*.deb /
