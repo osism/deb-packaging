@@ -79,6 +79,8 @@
       nodes:
         - name: debian-bookworm
           label: debian-bookworm
+        - name: ubuntu-noble
+          label: ubuntu-noble
     vars:
       ovs_version: "v3.4.3"
 
@@ -90,6 +92,8 @@
       nodes:
         - name: debian-bookworm
           label: debian-bookworm
+        - name: ubuntu-noble
+          label: ubuntu-noble
     vars:
       ovs_version: "v3.5.2"
 
