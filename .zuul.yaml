@@ -146,9 +146,7 @@
         - yamllint
     post:
       jobs:
-        - ansible-lint
         - deb-packaging-push-ovs-3.3
         - deb-packaging-push-ovs-3.4
         - deb-packaging-push-ovs-3.5
         - deb-packaging-push-open-iscsi-bookworm-backports
-        - yamllint
